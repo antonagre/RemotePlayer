@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import paho.mqtt.client as mqtt
-import time 
 import player
 import config
 
@@ -11,27 +10,22 @@ password = config.mqttPassword            #Connection password
 topic = config.deviceName+'/player'
 
 def on_message(client, userdata, message):
+    print(0)
     text=message.payload.decode("utf-8")
     print("message received " ,text)
     player.execCommand(text)
 
 def on_connect(client, userdata, flags, rc):
-    m = "Connected flags" + str(flags) + "result code " \
-        + str(rc) + "client1_id " + str(client)
-    print(m)
+    print("Connected with result code "+str(rc))
+    client.subscribe(topic)
+    print("Subscribing to topic",topic)
 
 
-client = mqtt.Client(config.deviceName"-PLAYER") #create new instance
-client.connect(broker_address) #connect to broker
+client = mqtt.Client()
 client.on_connect = on_connect
-client.message_callback_add(topic,on_message)
-print("Subscribing to topic",topic)
-client.subscribe(topic)
-
-
-
 client.on_message=on_message        #attach function to callback
-client.loop_start()
+client.username_pw_set(user,password) ## set mqtt username and password
+client.connect(broker_address,port,60)
 
-while(True):
-    time.sleep(100)
+##start pooling loop
+client.loop_forever()
