@@ -1,31 +1,63 @@
-#!/usr/bin/python3
-import paho.mqtt.client as mqtt
-import player
-import config
+# coding=utf-8
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import Pyro5.api
 
-broker_address= config.broker_address  #Broker address
-port = config.mqttPort                         #Broker port
-user = config.mqttUser                    #Connection username
-password = config.mqttPassword            #Connection password
-topic = config.deviceName+'/player'
+app = Flask(__name__)
+CORS(app)
 
-def on_message(client, userdata, message):
-    print(0)
-    text=message.payload.decode("utf-8")
-    print("message received " ,text)
-    player.execCommand(text)
+def getPlayer():
+    nameserver = Pyro5.api.locate_ns("192.168.1.202")
+    uri = nameserver.lookup("player-rmi")
+    rmi = Pyro5.api.Proxy(uri)
+    return rmi
 
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
-    client.subscribe(topic)
-    print("Subscribing to topic",topic)
+@app.route('/play', methods=['POST'])
+def play():
+    print("play")
+    name=request.get_data().decode()
+    getPlayer().play(name)
+    return "200"
+
+@app.route('/next', methods=['GET'])
+def next():
+    getPlayer().next()
+    return "200"
+
+@app.route('/prev', methods=['GET'])
+def prev():
+    getPlayer().previous()
+    return "200"
+
+@app.route('/pause', methods=['GET'])
+def pause():
+    getPlayer().pause()
+    return "200"
+
+@app.route('/stop', methods=['GET'])
+def stop():
+    getPlayer().stop()
+    return "200"
+
+@app.route('/resume', methods=['GET'])
+def resume():
+    getPlayer().resume()
+    return "200"
 
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message=on_message        #attach function to callback
-client.username_pw_set(user,password) ## set mqtt username and password
-client.connect(broker_address,port,60)
+@app.route('/volUp', methods=['GET'])
+def volUp():
+    getPlayer().volUp()
+    return "200"
 
-##start pooling loop
-client.loop_forever()
+@app.route('/volDown', methods=['GET'])
+def volDown():
+    getPlayer().volDown()
+    return "200"
+
+@app.route('/set/volume', methods=['POST'])
+def setVol():
+    v = int(request.get_data().decode())
+    getPlayer().setVol(v)
+    return "200"
+
