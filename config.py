@@ -1,5 +1,5 @@
-broker_address= "aadev.ml"  #Broker address
+broker_address= "url"  #Broker address
 mqttPort = 1883                         #Broker port
-mqttUser = "hassio"                    #Connection username
-mqttPassword = "cazzabbubbulo"#Connection password
-deviceName="lenny"
+mqttUser = "user"                    #Connection username
+mqttPassword = "password"#Connection password
+deviceName="test-name"
