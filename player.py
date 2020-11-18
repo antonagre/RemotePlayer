@@ -3,7 +3,7 @@ import pexpect
 import alsaaudio
 
 try:
-    mixer = alsaaudio.Mixer('PCM')
+    mixer = alsaaudio.Mixer('Headphone')
 except:
     mixer = alsaaudio.Mixer()
 
