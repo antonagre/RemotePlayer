@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import pexpect
-import json
+import alsaaudio
+
+mixer = alsaaudio.Mixer()
 
 
 ########NODE CLIENT HELPER########################
@@ -42,6 +44,20 @@ def processCommand(message):
         pause()
     elif(command=="previous"):
         p.sendline('<')
+    elif(command=="vol-up"):
+        v=mixer.getvolume()[0]+10
+        print(v)
+        if(v<=100):
+            mixer.setvolume(v)
+    elif(command=="vol-down"):
+        v=mixer.getvolume()[0]-10
+        print(v)
+        if(v>=0):
+            mixer.setvolume(v)
+    elif(command=="set-vol"):
+        v=int(args)
+        if(v<=100):
+            mixer.setvolume(v)
     else:
         return False
     return True
