@@ -1,0 +1,4 @@
+pexpect
+pyalsaaudio
+mps-youtube
+paho-mqtt
