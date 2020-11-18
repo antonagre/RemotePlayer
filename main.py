@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import Flask, jsonify, request
+from flask import Flask, request
 from flask_cors import CORS
 import Pyro5.api
 
