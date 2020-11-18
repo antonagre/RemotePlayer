@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 def getPlayer():
-    nameserver = Pyro5.api.locate_ns("192.168.1.202")
+    nameserver = Pyro5.api.locate_ns("127.0.0.1")
     uri = nameserver.lookup("player-rmi")
     rmi = Pyro5.api.Proxy(uri)
     return rmi

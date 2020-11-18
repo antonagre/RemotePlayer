@@ -1,24 +1,25 @@
 #!/usr/bin/python3
 import pexpect
 import alsaaudio
-from threading import Thread
 playing = False
 
+__instance__ = None
 
-class Player(Thread):
+
+def getPlayer():
+    global __instance__
+    if(__instance__==None):
+        __instance__= Player()
+    return __instance__
+
+class Player():
 
     def __init__(self):
-        Thread.__init__(self)
         self.p = pexpect.spawn("mpsyt")
         try:
             self.mixer = alsaaudio.Mixer('Headphone')
         except:
             self.mixer = alsaaudio.Mixer()
-        self.start()
-
-    def run(self):
-        while(True):
-            pass
 
     def play(self,name):
         global playing

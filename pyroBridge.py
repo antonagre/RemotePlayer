@@ -1,28 +1,11 @@
-from threading import Thread
-from player import Player
+import player
 from Pyro5.api import expose, Daemon, locate_ns
 
 @expose
-class PyroBridge(Thread):
+class PyroBridge():
     def __init__(self):
-        Thread.__init__(self)
-        self.player=Player()
-        Thread.daemon = True
-        self.daemon = Daemon("192.168.1.202")  # make a Pyro daemon
-        self.ns = locate_ns()# find the name server
-        self.uri = self.daemon.register(self)   # register the greeting maker as a Pyro object
-        print("Ready. Object uri = "+str(self.uri))      # log( the uri so we can use it in the client later
-        self.ns.register("player-rmi", self.uri)
-        print("Pyro Server Loaded and Running")
+        self.player=player.getPlayer()
 
-    def run(self):
-        while(True):
-            try:
-                self.daemon.requestLoop()
-            except:
-                pass
-
-    @expose
     def play(self,name):
         self.player.play(name)
 
@@ -49,5 +32,14 @@ class PyroBridge(Thread):
         self.player.stop()
 
 
-brg=PyroBridge()
-brg.start()
+def run():
+    daemon = Daemon()  # make a Pyro daemon
+    ns = locate_ns("127.0.0.1")# find the name server
+    uri = daemon.register(PyroBridge)   # register the greeting maker as a Pyro object
+    print("Ready. Object uri = "+str(uri))      # log( the uri so we can use it in the client later
+    ns.register("player-rmi", uri)
+    print("Pyro Server Loaded and Running")
+    daemon.requestLoop()
+
+
+run()

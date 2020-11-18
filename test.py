@@ -1,11 +1,6 @@
-import multiprocessing
-from player import *
+import Pyro5.api
 
-with multiprocessing.Manager() as manager:
-    name=("cirano")
-    p1 = multiprocessing.Process(target=play,args=(name,))
-    p1.start()
-    #p1.join()
-
-
-
+nameserver = Pyro5.api.locate_ns("192.168.1.202")
+uri = nameserver.lookup("player-rmi")
+rmi = Pyro5.api.Proxy(uri)
+rmi.play("bocca di rosa")
