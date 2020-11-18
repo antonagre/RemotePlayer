@@ -2,7 +2,10 @@
 import pexpect
 import alsaaudio
 
-mixer = alsaaudio.Mixer()
+try:
+    mixer = alsaaudio.Mixer('PCM')
+except:
+    mixer = alsaaudio.Mixer()
 
 
 ########NODE CLIENT HELPER########################
