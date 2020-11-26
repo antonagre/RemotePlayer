@@ -1,63 +1,57 @@
 # coding=utf-8
 from flask import Flask, request
 from flask_cors import CORS
-import Pyro5.api
-
+import mpvAdapter as mpv
 app = Flask(__name__)
 CORS(app)
 
-def getPlayer():
-    nameserver = Pyro5.api.locate_ns("127.0.0.1")
-    uri = nameserver.lookup("player-rmi")
-    rmi = Pyro5.api.Proxy(uri)
-    return rmi
 
 @app.route('/play', methods=['POST'])
 def play():
     print("play")
     name=request.get_data().decode()
-    getPlayer().play(name)
-    return "200"
-
-@app.route('/next', methods=['GET'])
-def next():
-    getPlayer().next()
-    return "200"
-
-@app.route('/prev', methods=['GET'])
-def prev():
-    getPlayer().previous()
+    mpv.play(name)
     return "200"
 
 @app.route('/pause', methods=['GET'])
 def pause():
-    getPlayer().pause()
+    mpv.pause()
     return "200"
 
 @app.route('/stop', methods=['GET'])
 def stop():
-    getPlayer().stop()
+    mpv.stop()
     return "200"
 
 @app.route('/resume', methods=['GET'])
 def resume():
-    getPlayer().resume()
+    mpv.resume()
+    return "200"
+
+@app.route('/set/pos', methods=['POST'])
+def seek():
+    v = int(request.get_data().decode())
+    mpv.seek(v)
     return "200"
 
 
+@app.route('/get/info', methods=['GET'])
+def getSongInfo():
+    return mpv.getInfo()
+
+'''
 @app.route('/volUp', methods=['GET'])
 def volUp():
-    getPlayer().volUp()
+    mpv.volUp()
     return "200"
 
 @app.route('/volDown', methods=['GET'])
 def volDown():
-    getPlayer().volDown()
+    mpv.volDown()
     return "200"
 
 @app.route('/set/volume', methods=['POST'])
 def setVol():
     v = int(request.get_data().decode())
-    getPlayer().setVol(v)
-    return "200"
-
+    mpv.setVol(v)
+    return "200"'''

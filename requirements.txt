@@ -1,5 +1,4 @@
 pexpect
-pyalsaaudio
 mps-youtube==0.2.8
 pyro5
 flask
