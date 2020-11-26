@@ -3,3 +3,7 @@ mps-youtube==0.2.8
 pyro5
 flask
 flask-cors
+pafy
+youtube_search
+json
+python-mpv
